@@ -19,10 +19,10 @@ public class Game extends JPanel implements KeyListener {
 	// will make the code less readable
 
 	// the main game components
-	public static Plane plane;
-	public static Boat boat;
-	public static Paradrop paradrop;
-	public int score = 0, lives = 3;
+	protected static Plane plane;
+	protected static Boat boat;
+	protected static Paradrop paradrop;
+	private int score = 0, lives = 3;
 
 	// this is an override of the swing paint function. it renders all of the
 	// frames.

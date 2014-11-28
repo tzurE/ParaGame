@@ -6,8 +6,8 @@ public class Boat extends baseGameCharacter {
 	//on the current constructor
 	
 	
-	private int speed_right = 5;
-	private int speed_left = -5;
+	private int speed_right = 4;
+	private int speed_left = -4;
 	private boolean movingRight = false;
 	private boolean movingLeft = false;
 
