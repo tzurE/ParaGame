@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -19,9 +21,8 @@ public class Game extends JPanel implements KeyListener {
 	// will make the code less readable
 
 	// the main game components
-	protected static Plane plane;
-	protected static Boat boat;
 	protected static Paradrop paradrop;
+	protected static List<baseGameCharacter> game_ent = new ArrayList<baseGameCharacter>();
 	private int score = 0, lives = 3;
 
 	// this is an override of the swing paint function. it renders all of the
@@ -31,21 +32,22 @@ public class Game extends JPanel implements KeyListener {
 		super.paint(g);
 		Graphics2D g1 = (Graphics2D) g;
 		g1.setColor(Color.BLUE);
-		g1.fillRect(0, 470, 500, 100);
-		g1.drawImage(plane.getImage(), plane.getX(), plane.getY(), null);
-		g1.drawImage(boat.getImage(), boat.getX(), boat.getY(), null);
-		g1.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+		g1.fillRect(ConstantStuff.LeftBound, ConstantStuff.UpperBound, ConstantStuff.WaterWidth, ConstantStuff.WaterHieght);
+		//iterate over entities of the game and draw them - 
+		for(baseGameCharacter ent: game_ent)
+			g1.drawImage(ent.getImage(), ent.getX(), ent.getY(), null);
+		g1.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, ConstantStuff.FontSize));
 		
 		//drawing the mini-gui of the scoring and lives left
-		g1.drawString("Score: " + score, 25, 35);
-		g1.drawString("Lives: " + lives, 300, 35);
+		g1.drawString("Score: " + score, ConstantStuff.ScoreX, 35);
+		g1.drawString("Lives: " + lives, ConstantStuff.LivesX, 35);
 		if (paradrop != null) {
 			if (paradrop.isDropped())
 				g1.drawImage(paradrop.getImage(), paradrop.getX(),
 						paradrop.getY(), null);
 		}
 		if (this.lives == 0) {
-			g1.drawString("Game Over!", 150, 150);
+			g1.drawString("Game Over!", ConstantStuff.GameOverXY, ConstantStuff.GameOverXY);
 			return;
 		}
 		g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -59,15 +61,19 @@ public class Game extends JPanel implements KeyListener {
 		int time = 0, outcome;
 		//a boolean that get the value of true if A parachute is in the air right now
 		boolean dropped = false;
+		Plane plane;
+		Boat boat;
 
 		// initialize the main game components
 		Game game = new Game();
-		plane = new Plane(500, 0, "assets/plane.png");
-		boat = new Boat(250, 332, "assets/boat.png");
+		plane = new Plane(ConstantStuff.WaterWidth, ConstantStuff.LeftBound, "assets/plane.png");
+		boat = new Boat(ConstantStuff.BoatX, ConstantStuff.BoatY, "assets/boat.png");
+		game_ent.add(plane);
+		game_ent.add(boat);
 
 		frame.add(game);
 		game.setBackground(Color.white);
-		frame.setSize(500, 600);
+		frame.setSize(ConstantStuff.WaterWidth, ConstantStuff.WinHeight);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addKeyListener(game);
@@ -130,6 +136,7 @@ public class Game extends JPanel implements KeyListener {
 	// released, it will immediately stop
 	@Override
 	public void keyPressed(KeyEvent e) {
+		Boat boat = (Boat) game_ent.get(1);
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
 			boat.moveLeft();
@@ -146,6 +153,7 @@ public class Game extends JPanel implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		Boat boat = (Boat) game_ent.get(1);
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
 			boat.setMovingLeft(false);
